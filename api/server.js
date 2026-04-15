@@ -126,11 +126,21 @@ app.post('/responses', async (req, res) => {
   }
 });
 
-// PUT /responses/:id — update response
+// PUT /responses/:id — update response (title, content, optional folder_id to move)
 app.put('/responses/:id', async (req, res) => {
   try {
-    const { title, content } = req.body;
-    await pool.query('UPDATE responses SET title = $1, content = $2, updated_at = NOW() WHERE id = $3', [title, content, req.params.id]);
+    const { title, content, folder_id } = req.body;
+    if (folder_id !== undefined && folder_id !== null) {
+      await pool.query(
+        'UPDATE responses SET title = $1, content = $2, folder_id = $3, updated_at = NOW() WHERE id = $4',
+        [title, content, folder_id, req.params.id]
+      );
+    } else {
+      await pool.query(
+        'UPDATE responses SET title = $1, content = $2, updated_at = NOW() WHERE id = $3',
+        [title, content, req.params.id]
+      );
+    }
     res.json({ ok: true });
   } catch (err) {
     console.error('PUT /responses error:', err);

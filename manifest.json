@@ -4,6 +4,10 @@
   "version": "1.1.0",
   "description": "Side panel quick responses for fast copy & paste",
   "permissions": ["sidePanel"],
+  "host_permissions": [
+    "https://itunes.apple.com/*",
+    "https://api-production-cad4.up.railway.app/*"
+  ],
   "action": {
     "default_icon": {
       "16": "icon16.png",
