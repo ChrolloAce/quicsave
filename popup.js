@@ -437,15 +437,64 @@ function editResponseModal(response) {
 const BIBLE_API_URL = 'https://bible-api.com/?random=verse';
 const PRAYER_LOGO = 'assets/prayerlock-logo.jpg';
 const BACKGROUNDS = [
-  'assets/backgrounds/bg1-sunset.svg',
-  'assets/backgrounds/bg2-ocean.svg',
-  'assets/backgrounds/bg3-dawn.svg',
-  'assets/backgrounds/bg4-midnight.svg',
-  'assets/backgrounds/bg5-forest.svg',
-  'assets/backgrounds/bg6-lavender.svg',
-  'assets/backgrounds/bg7-gold.svg',
-  'assets/backgrounds/bg8-rose.svg',
+  'assets/backgrounds/bg-10.jpg',
+  'assets/backgrounds/bg-13.jpg',
+  'assets/backgrounds/bg-15.jpg',
+  'assets/backgrounds/bg-27.jpg',
+  'assets/backgrounds/bg-29.jpg',
+  'assets/backgrounds/bg-1015.jpg',
+  'assets/backgrounds/bg-1018.jpg',
+  'assets/backgrounds/bg-1019.jpg',
+  'assets/backgrounds/bg-1022.jpg',
+  'assets/backgrounds/bg-1036.jpg',
+  'assets/backgrounds/bg-1037.jpg',
+  'assets/backgrounds/bg-1039.jpg',
+  'assets/backgrounds/bg-1043.jpg',
 ];
+
+// Caption variations for DMs to Christian creators
+const VERSE_CAPTIONS = [
+  "Good morning! Dropping in with a little encouragement — a verse to carry with you today. 🙏",
+  "Hey friend, hope your morning is blessed. Here's a word from scripture I thought you'd love:",
+  "Morning! Sending this your way today — felt like the right one to share with you.",
+  "Good morning! A quick reminder that God's working behind the scenes. Here's a verse for today:",
+  "Hope your day is off to a beautiful start. Here's today's verse — take it with you.",
+  "Morning! This one hit different today — wanted to pass it along to you.",
+  "Good morning! Praying for you today. Here's a word to anchor your morning:",
+  "Hey, hope you're doing well. Here's a verse to start the day off right:",
+  "Good morning friend! Starting the day in the Word — sharing this one with you.",
+  "Morning! A little light for your day. Let this one sit with you for a minute:",
+  "Hope you're being lifted up today. Here's a verse that's been on my heart:",
+  "Good morning! Thought of you this morning while reading this — had to share it:",
+  "Hey! Here's your daily dose of encouragement from scripture:",
+  "Morning friend. A verse to remind you whose you are today:",
+  "Good morning! May this word meet you right where you are today:",
+  "Hey — wanted to kick your day off with a little truth from the Word:",
+  "Morning! Hope this verse lands on your heart the way it landed on mine:",
+  "Good morning! Another day, another reason to trust Him. Here's today's:",
+  "Hey, sending you a verse to carry with you today. God's got you.",
+  "Morning! Here's a word to lean on today — praying it blesses you.",
+];
+
+const REVIEW_CAPTIONS = [
+  "Hey! Another 5-star review just came in for Prayer Lock. 🙌 Thank you for everything you do to help people draw closer to God — you're a huge part of why these keep rolling in.",
+  "Look at this — another 5★ review for Prayer Lock. Wanted to share it with you because you're literally the reason stories like this are happening. 🙏",
+  "Yo, check this out. Another 5-star review for Prayer Lock. Thank you for being part of this mission — you're changing lives one post at a time.",
+  "Hey friend! Another beautiful 5-star review came in today. Every review like this is a reminder of the real impact — thank you for what you do.",
+  "Good morning! Sharing another 5-star review for Prayer Lock with you. People are finding real peace through the app and it wouldn't be possible without creators like you.",
+  "Another day, another 5★ review. 🙌 Wanted you to see it because your work is part of this story. Thank you for closing the distance between people and God.",
+  "Hey! This one gave us chills — another 5-star review for Prayer Lock. Your voice is reaching hearts. Thank you for everything.",
+  "Check this out — another glowing 5★ review for Prayer Lock. We see you out there pouring into this mission. Thank you.",
+  "Morning! Just got another 5-star review and had to share. You're a huge reason these keep happening. Keep going — the fruit is real.",
+  "Hey, another 5★ review for Prayer Lock came in. Sharing it so you can see the impact firsthand. Thank you for doing what you do.",
+  "Another 5-star review for Prayer Lock. 🙏 You're part of the reason people are finding faith through the app — thank you for all of it.",
+  "Yo! Look at this review — 5 stars for Prayer Lock. You're the reason Jesus is reaching more people through this app. Grateful for you.",
+  "Another review like this hit the App Store today. 5★ for Prayer Lock — sending it your way because you made this happen.",
+  "Good morning! Another 5-star review for Prayer Lock. Wanted to celebrate it with you — you're moving the needle in a big way.",
+  "Hey — another 5-star review just came in and I had to share. Thank you for helping people find God every single day. 🙏",
+];
+
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
 let prayerView = 'home'; // 'home' | 'reviews' | 'verses'
 let reviewsCache = { reviews: [], loaded: false };
@@ -688,7 +737,8 @@ async function renderReviewCard(r) {
   }
 
   document.getElementById('reviewCopy').onclick = async () => {
-    const text = `"${r.title}"\n\n${r.content}\n\n— ${r.author} (${r.rating}★)`;
+    const caption = pickRandom(REVIEW_CAPTIONS);
+    const text = `${caption}\n\n"${r.title}"\n\n${r.content}\n\n— ${r.author} (${r.rating}★)`;
     try { await navigator.clipboard.writeText(text); } catch {}
     await markUsed('usedReviews', r.id);
     await storageSet({ currentReview: null });
@@ -817,7 +867,8 @@ async function renderVerseCard(v) {
   };
 
   document.getElementById('verseCopyText').onclick = async () => {
-    const text = `"${v.text}"\n— ${v.reference}`;
+    const caption = pickRandom(VERSE_CAPTIONS);
+    const text = `${caption}\n\n"${v.text}"\n— ${v.reference}`;
     try { await navigator.clipboard.writeText(text); } catch {}
     flashBtn('verseCopyText', 'Copied!');
     onUse();
@@ -933,94 +984,143 @@ function wrapText(ctx, text, maxWidth) {
   return lines;
 }
 
+function roundedRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.quadraticCurveTo(x + w, y, x + w, y + r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+  ctx.lineTo(x + r, y + h);
+  ctx.quadraticCurveTo(x, y + h, x, y + h - r);
+  ctx.lineTo(x, y + r);
+  ctx.quadraticCurveTo(x, y, x + r, y);
+  ctx.closePath();
+}
+
 async function renderVerseBlob(v) {
-  const W = 1200, H = 800;
+  const S = 1080; // square canvas
   const canvas = document.createElement('canvas');
-  canvas.width = W;
-  canvas.height = H;
+  canvas.width = S;
+  canvas.height = S;
   const ctx = canvas.getContext('2d');
 
-  // Background
+  // Cream page background
+  ctx.fillStyle = '#F4F1EA';
+  ctx.fillRect(0, 0, S, S);
+
+  // Card geometry — neo-brutalism offset shadow
+  const margin = 50;
+  const shadowOffset = 22;
+  const cardX = margin;
+  const cardY = margin;
+  const cardW = S - 2 * margin - shadowOffset;
+  const cardH = cardW; // keep square
+  const radius = 40;
+
+  // 1) Offset black shadow
+  roundedRectPath(ctx, cardX + shadowOffset, cardY + shadowOffset, cardW, cardH, radius);
+  ctx.fillStyle = '#0A0A0A';
+  ctx.fill();
+
+  // 2) Card clip, draw image cover-fit inside
+  ctx.save();
+  roundedRectPath(ctx, cardX, cardY, cardW, cardH, radius);
+  ctx.clip();
+
   try {
     const bg = await loadImg(v.bgImage);
-    ctx.drawImage(bg, 0, 0, W, H);
+    const imgW = bg.naturalWidth || bg.width;
+    const imgH = bg.naturalHeight || bg.height;
+    const cardAR = cardW / cardH;
+    const imgAR = imgW / imgH;
+    let sx = 0, sy = 0, sw = imgW, sh = imgH;
+    if (imgAR > cardAR) {
+      sw = imgH * cardAR;
+      sx = (imgW - sw) / 2;
+    } else {
+      sh = imgW / cardAR;
+      sy = (imgH - sh) / 2;
+    }
+    ctx.drawImage(bg, sx, sy, sw, sh, cardX, cardY, cardW, cardH);
   } catch {
     ctx.fillStyle = '#2E3192';
-    ctx.fillRect(0, 0, W, H);
+    ctx.fillRect(cardX, cardY, cardW, cardH);
   }
 
-  // Dark gradient overlay (stronger at bottom)
-  const grad = ctx.createLinearGradient(0, 0, 0, H);
-  grad.addColorStop(0, 'rgba(10,10,10,0.25)');
-  grad.addColorStop(0.45, 'rgba(10,10,10,0.55)');
-  grad.addColorStop(1, 'rgba(10,10,10,0.92)');
+  // 3) Dark gradient overlay for text readability
+  const grad = ctx.createLinearGradient(cardX, cardY, cardX, cardY + cardH);
+  grad.addColorStop(0, 'rgba(10,10,10,0.20)');
+  grad.addColorStop(0.35, 'rgba(10,10,10,0.30)');
+  grad.addColorStop(0.65, 'rgba(10,10,10,0.70)');
+  grad.addColorStop(1, 'rgba(10,10,10,0.95)');
   ctx.fillStyle = grad;
-  ctx.fillRect(0, 0, W, H);
+  ctx.fillRect(cardX, cardY, cardW, cardH);
 
-  // Logo top-left
+  // 4) Logo + app name top-left
+  const logoSize = 108;
+  const lx = cardX + 44;
+  const ly = cardY + 44;
+  const logoRadius = 26;
   try {
     const logo = await loadImg(PRAYER_LOGO);
-    const logoSize = 110;
-    // rounded rect clip
-    const lx = 50, ly = 50;
-    const r = 22;
     ctx.save();
-    ctx.beginPath();
-    ctx.moveTo(lx + r, ly);
-    ctx.arcTo(lx + logoSize, ly, lx + logoSize, ly + logoSize, r);
-    ctx.arcTo(lx + logoSize, ly + logoSize, lx, ly + logoSize, r);
-    ctx.arcTo(lx, ly + logoSize, lx, ly, r);
-    ctx.arcTo(lx, ly, lx + logoSize, ly, r);
-    ctx.closePath();
+    roundedRectPath(ctx, lx, ly, logoSize, logoSize, logoRadius);
     ctx.clip();
     ctx.drawImage(logo, lx, ly, logoSize, logoSize);
     ctx.restore();
-    // Border around logo
-    ctx.strokeStyle = '#fff';
+    ctx.strokeStyle = '#ffffff';
     ctx.lineWidth = 4;
-    ctx.beginPath();
-    ctx.moveTo(lx + r, ly);
-    ctx.arcTo(lx + logoSize, ly, lx + logoSize, ly + logoSize, r);
-    ctx.arcTo(lx + logoSize, ly + logoSize, lx, ly + logoSize, r);
-    ctx.arcTo(lx, ly + logoSize, lx, ly, r);
-    ctx.arcTo(lx, ly, lx + logoSize, ly, r);
-    ctx.closePath();
+    roundedRectPath(ctx, lx, ly, logoSize, logoSize, logoRadius);
     ctx.stroke();
   } catch {}
 
-  // App name
-  ctx.fillStyle = '#fff';
-  ctx.font = '800 34px -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif';
-  ctx.textBaseline = 'middle';
-  ctx.shadowColor = 'rgba(0,0,0,0.6)';
-  ctx.shadowBlur = 8;
-  ctx.fillText('PRAYER LOCK', 180, 105);
+  ctx.fillStyle = '#ffffff';
+  ctx.textBaseline = 'alphabetic';
+  ctx.shadowColor = 'rgba(0,0,0,0.7)';
+  ctx.shadowBlur = 12;
+  ctx.font = '800 32px "Helvetica Neue", -apple-system, BlinkMacSystemFont, sans-serif';
+  ctx.fillText('PRAYER LOCK', lx + logoSize + 22, ly + 48);
+
+  ctx.font = '600 18px "Helvetica Neue", -apple-system, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.fillText('VERSE OF THE DAY', lx + logoSize + 22, ly + 80);
   ctx.shadowBlur = 0;
 
-  // Verse text (wrap)
-  ctx.font = 'italic 600 42px Georgia, "Times New Roman", serif';
-  ctx.fillStyle = '#fff';
-  const maxWidth = W - 100;
+  // 5) Verse text — elegant serif italic, wrapped
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'italic 600 44px "Playfair Display", "Didot", "Georgia", "Times New Roman", serif';
+  const maxTextWidth = cardW - 120;
   const quoted = `"${v.text}"`;
-  const lines = wrapText(ctx, quoted, maxWidth);
+  const lines = wrapText(ctx, quoted, maxTextWidth);
   const lineHeight = 58;
-  const refHeight = 50;
   const bottomPad = 70;
-  const textBlockH = lines.length * lineHeight + refHeight + 30;
-  let y = H - bottomPad - textBlockH + lineHeight / 2;
-  ctx.shadowColor = 'rgba(0,0,0,0.7)';
-  ctx.shadowBlur = 10;
+  const refBlock = 70;
+  const totalH = lines.length * lineHeight + refBlock;
+  let y = cardY + cardH - bottomPad - totalH + lineHeight;
+
+  ctx.shadowColor = 'rgba(0,0,0,0.85)';
+  ctx.shadowBlur = 16;
+  ctx.textAlign = 'left';
   lines.forEach(line => {
-    ctx.fillText(line, 50, y);
+    ctx.fillText(line, cardX + 60, y);
     y += lineHeight;
   });
 
-  // Reference
+  // 6) Reference
   y += 18;
-  ctx.font = '800 26px -apple-system, sans-serif';
+  ctx.font = '800 26px "Helvetica Neue", -apple-system, sans-serif';
   const refText = `— ${v.reference}${v.translation ? ' · ' + v.translation : ''}`;
-  ctx.fillText(refText.toUpperCase(), 50, y);
+  ctx.fillText(refText.toUpperCase(), cardX + 60, y);
   ctx.shadowBlur = 0;
+
+  ctx.restore();
+
+  // 7) Black card border last (above clipped content)
+  ctx.strokeStyle = '#0A0A0A';
+  ctx.lineWidth = 8;
+  roundedRectPath(ctx, cardX, cardY, cardW, cardH, radius);
+  ctx.stroke();
 
   return await new Promise((resolve, reject) => {
     canvas.toBlob(blob => blob ? resolve(blob) : reject(new Error('toBlob returned null')), 'image/png');
