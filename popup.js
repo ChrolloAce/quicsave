@@ -267,28 +267,38 @@ function bindClicks() {
   });
 
   document.querySelectorAll('.card-item.response').forEach(el => {
+    // Edit button — capture phase so it fires before card click
+    el.querySelector('.edit-response')?.addEventListener('click', e => {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      el._actionClicked = true;
+      const r = findResponse(el.dataset.responseId);
+      if (r) editResponseModal(r);
+    }, true);
+
+    // Delete button — capture phase
+    el.querySelector('.delete-response')?.addEventListener('click', e => {
+      e.stopPropagation();
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      el._actionClicked = true;
+      const rid = el.dataset.responseId;
+      deleteResponseLocal(rid);
+      removeResponse(rid);
+      render();
+    }, true);
+
+    // Card click = copy (only if no action button was clicked)
     el.addEventListener('click', e => {
-      if (e.target.closest('.item-actions')) return;
+      if (el._actionClicked) { el._actionClicked = false; return; }
+      if (e.target.closest('.item-actions') || e.target.closest('.mini-btn')) return;
       const r = findResponse(el.dataset.responseId);
       if (r) {
         navigator.clipboard.writeText(r.content);
         el.classList.add('copied');
         setTimeout(() => el.classList.remove('copied'), 1200);
       }
-    });
-
-    el.querySelector('.edit-response')?.addEventListener('click', e => {
-      e.stopPropagation();
-      const r = findResponse(el.dataset.responseId);
-      if (r) editResponseModal(r);
-    });
-
-    el.querySelector('.delete-response')?.addEventListener('click', e => {
-      e.stopPropagation();
-      const rid = el.dataset.responseId;
-      deleteResponseLocal(rid);
-      removeResponse(rid);
-      render();
     });
   });
 }

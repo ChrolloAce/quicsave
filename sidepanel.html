@@ -167,8 +167,8 @@
       position: relative;
     }
 
-    .card-item:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-lg); }
-    .card-item:active { transform: translate(2px, 2px); box-shadow: var(--shadow-sm); }
+    .card-item.folder:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-lg); }
+    .card-item.folder:active { transform: translate(2px, 2px); box-shadow: var(--shadow-sm); }
     .card-item.copied { background: #DCFCE7; }
 
     .item-icon {
@@ -210,26 +210,33 @@
       text-overflow: ellipsis;
     }
 
-    .item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+    .item-actions {
+      display: flex;
+      gap: 5px;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 5;
+    }
 
     .mini-btn {
-      width: 26px;
-      height: 26px;
+      width: 30px;
+      height: 30px;
       border: var(--border);
       background: var(--card);
-      border-radius: 6px;
+      border-radius: 7px;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
+      font-size: 13px;
       font-weight: 700;
-      transition: all 0.1s;
+      transition: background 0.1s;
+      position: relative;
+      z-index: 6;
     }
 
     .mini-btn:hover { background: var(--accent-soft); }
     .mini-btn.delete:hover { background: #FECACA; }
-    .mini-btn:active { transform: translate(1px, 1px); }
 
     .copy-badge {
       position: absolute;
