@@ -445,6 +445,59 @@ function editResponseModal(response) {
 
 // ---- Prayer Lock ----
 const BIBLE_API_URL = 'https://bible-api.com/?random=verse';
+
+const VERSE_CATEGORIES = {
+  random: { label: 'Random', refs: null }, // uses random endpoint
+  motivational: { label: 'Motivational', refs: [
+    'Philippians 4:13','Joshua 1:9','Isaiah 41:10','Jeremiah 29:11','Romans 8:28',
+    'Psalm 46:1','Proverbs 3:5-6','2 Timothy 1:7','Isaiah 40:31','Deuteronomy 31:6',
+    'Psalm 27:1','Romans 8:31','1 Corinthians 16:13','Ephesians 6:10','Philippians 4:6-7',
+    'Psalm 118:6','Hebrews 13:6','Isaiah 43:2','Psalm 31:24','Nehemiah 8:10',
+    'Colossians 3:23','Galatians 6:9','2 Corinthians 12:9-10','Romans 15:13','Psalm 37:4',
+    'Matthew 19:26','Psalm 138:8','Isaiah 54:17','1 John 5:4','Psalm 121:1-2',
+  ]},
+  comfort: { label: 'Comfort & Peace', refs: [
+    'Psalm 23:1-4','Matthew 11:28-30','John 14:27','Psalm 34:18','2 Corinthians 1:3-4',
+    'Isaiah 41:13','Psalm 147:3','Romans 8:38-39','Psalm 55:22','1 Peter 5:7',
+    'Psalm 46:10','Isaiah 66:13','Matthew 5:4','Revelation 21:4','Psalm 30:5',
+    'Psalm 91:1-2','Nahum 1:7','Psalm 62:1-2','John 16:33','Lamentations 3:22-23',
+    'Psalm 34:4','2 Thessalonians 3:16','Isaiah 26:3','Psalm 4:8','Romans 15:13',
+  ]},
+  faith: { label: 'Faith & Trust', refs: [
+    'Hebrews 11:1','Hebrews 11:6','Romans 10:17','Mark 11:24','James 1:6',
+    'Matthew 17:20','2 Corinthians 5:7','Proverbs 3:5-6','Psalm 37:5','Isaiah 40:31',
+    'Jeremiah 17:7','Romans 8:24-25','Psalm 56:3-4','1 Peter 1:8-9','Habakkuk 2:4',
+    'Galatians 2:20','Ephesians 2:8-9','Mark 9:23','John 20:29','Psalm 9:10',
+    'Psalm 62:8','Proverbs 29:25','Isaiah 12:2','Psalm 28:7','Psalm 112:7',
+  ]},
+  love: { label: 'Love', refs: [
+    '1 Corinthians 13:4-7','1 John 4:7-8','John 3:16','Romans 5:8','1 John 4:19',
+    'Ephesians 3:17-19','1 Peter 4:8','Colossians 3:14','Romans 13:10','John 15:12-13',
+    '1 John 3:18','Song of Solomon 8:6-7','Mark 12:30-31','Galatians 5:22-23','Psalm 136:1',
+    'Zephaniah 3:17','Psalm 86:15','Romans 8:35-37','1 John 4:16','Deuteronomy 7:9',
+    'Jeremiah 31:3','John 13:34-35','Proverbs 10:12','1 Corinthians 16:14','Psalm 103:8',
+  ]},
+  wisdom: { label: 'Wisdom', refs: [
+    'James 1:5','Proverbs 2:6','Proverbs 4:7','Colossians 3:16','Psalm 111:10',
+    'Proverbs 9:10','Proverbs 16:16','Ecclesiastes 7:12','Proverbs 19:20','Proverbs 1:7',
+    'James 3:17','Proverbs 3:13-14','Job 28:28','Proverbs 11:2','Proverbs 15:33',
+    'Proverbs 24:14','1 Corinthians 1:25','Proverbs 13:20','Proverbs 18:15','Psalm 90:12',
+  ]},
+  praise: { label: 'Praise & Gratitude', refs: [
+    'Psalm 100:1-2','Psalm 150:6','Psalm 95:1-2','1 Thessalonians 5:18','Psalm 34:1',
+    'Psalm 107:1','Colossians 3:17','Hebrews 13:15','Psalm 9:1-2','Psalm 103:1-2',
+    'Ephesians 5:19-20','Psalm 145:3','Psalm 63:3-4','Psalm 105:1-2','Philippians 4:4',
+    'Psalm 96:1-3','Psalm 33:1-3','Psalm 66:1-2','1 Chronicles 16:34','Psalm 92:1-2',
+  ]},
+  hope: { label: 'Hope', refs: [
+    'Romans 15:13','Jeremiah 29:11','Psalm 39:7','Hebrews 6:19','Romans 5:3-5',
+    'Lamentations 3:24-25','Psalm 42:11','1 Peter 1:3','Isaiah 40:31','Psalm 130:5',
+    'Romans 8:24-25','Titus 3:7','Psalm 71:5','Hebrews 11:1','Micah 7:7',
+    'Psalm 33:18','Colossians 1:27','Psalm 62:5','Zechariah 9:12','Job 11:18',
+  ]},
+};
+
+let selectedCategory = 'random';
 const PRAYER_LOGO = 'assets/prayerlock-logo.jpg';
 const BACKGROUNDS = [
   'assets/backgrounds/bg-10.jpg',
@@ -730,10 +783,10 @@ async function renderReviewCard(r) {
           <div class="author-sub">${esc(dateStr)}</div>
         </div>
       </div>
-      <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:14px;">
-        <button class="btn btn-primary" id="reviewCopyText" style="flex:1;min-width:80px">Copy Text</button>
-        <button class="btn btn-primary" id="reviewCopyImg" style="flex:1;min-width:80px">Copy Image</button>
-        <button class="btn" id="reviewDownload" style="flex:1;min-width:80px">Download</button>
+      <div class="action-row">
+        <button class="action-pill primary" id="reviewCopyText">Copy Text</button>
+        <button class="action-pill primary" id="reviewCopyImg">Copy Image</button>
+        <button class="action-pill" id="reviewDownload">Download</button>
       </div>
     </div>
   `;
@@ -801,16 +854,23 @@ async function renderReviewCard(r) {
 // ---- Verses panel ----
 async function renderVersesPanel() {
   const el = document.getElementById('prayerContent');
+  const catOptions = Object.entries(VERSE_CATEGORIES)
+    .map(([key, cat]) => `<option value="${key}"${key === selectedCategory ? ' selected' : ''}>${esc(cat.label)}</option>`)
+    .join('');
   el.innerHTML = `
     <div class="prayer-toolbar">
-      <button class="btn" id="prayerBack">← Back</button>
-      <button class="btn btn-primary" id="verseGenerate" style="flex:1">Generate</button>
+      <button class="btn" id="prayerBack">←</button>
+      <select id="verseCategorySelect" class="category-select">${catOptions}</select>
+      <button class="btn btn-primary" id="verseGenerate">Generate</button>
     </div>
     <div id="verseCardWrap"></div>
     <div id="verseStats"></div>
   `;
   document.getElementById('prayerBack').onclick = () => { prayerView = 'home'; loadPrayerLock(); };
   document.getElementById('verseGenerate').onclick = generateVerse;
+  document.getElementById('verseCategorySelect').onchange = (e) => {
+    selectedCategory = e.target.value;
+  };
 
   const stored = await storageGet(['currentVerse']);
   if (stored.currentVerse) {
@@ -824,37 +884,65 @@ async function generateVerse() {
   const wrap = document.getElementById('verseCardWrap');
   if (wrap) wrap.innerHTML = '<div class="review-loading">Loading verse...</div>';
   const usedRefs = await getUsedVerseRefs();
+  const cat = VERSE_CATEGORIES[selectedCategory] || VERSE_CATEGORIES.random;
 
   let verse = null;
-  for (let attempt = 0; attempt < 12; attempt++) {
-    try {
-      const res = await fetch(BIBLE_API_URL);
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
-      const json = await res.json();
-      const reference = json.reference || '';
-      const text = (json.text || '').trim();
-      if (!text || !reference) continue;
-      if (usedRefs.has(reference)) continue;
-      verse = { reference, text, translation: json.translation_name || '' };
-      break;
-    } catch (err) {
-      if (wrap) wrap.innerHTML = `<div class="review-loading">Failed to fetch verse: ${esc(err.message)}<br><br>If you just updated the extension, reload it at chrome://extensions/ first.</div>`;
+
+  if (cat.refs) {
+    // Category mode — pick a random unused reference from the curated list
+    const available = cat.refs.filter(ref => !usedRefs.has(ref));
+    if (!available.length) {
+      if (wrap) wrap.innerHTML = `<div class="review-loading">All ${esc(cat.label)} verses used!<br><br>Reset used verses or pick another category.</div>`;
       return;
     }
-  }
-
-  if (!verse) {
+    const ref = available[Math.floor(Math.random() * available.length)];
     try {
-      const res = await fetch(BIBLE_API_URL);
+      const res = await fetch(`https://bible-api.com/${encodeURIComponent(ref)}`);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const json = await res.json();
       verse = {
-        reference: json.reference || '',
+        reference: json.reference || ref,
         text: (json.text || '').trim(),
         translation: json.translation_name || '',
+        category: selectedCategory,
       };
     } catch (err) {
-      if (wrap) wrap.innerHTML = `<div class="review-loading">Failed: ${esc(err.message)}</div>`;
+      if (wrap) wrap.innerHTML = `<div class="review-loading">Failed to fetch verse: ${esc(err.message)}</div>`;
       return;
+    }
+  } else {
+    // Random mode — use the random endpoint
+    for (let attempt = 0; attempt < 12; attempt++) {
+      try {
+        const res = await fetch(BIBLE_API_URL);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const json = await res.json();
+        const reference = json.reference || '';
+        const text = (json.text || '').trim();
+        if (!text || !reference) continue;
+        if (usedRefs.has(reference)) continue;
+        verse = { reference, text, translation: json.translation_name || '', category: 'random' };
+        break;
+      } catch (err) {
+        if (wrap) wrap.innerHTML = `<div class="review-loading">Failed to fetch verse: ${esc(err.message)}</div>`;
+        return;
+      }
+    }
+
+    if (!verse) {
+      try {
+        const res = await fetch(BIBLE_API_URL);
+        const json = await res.json();
+        verse = {
+          reference: json.reference || '',
+          text: (json.text || '').trim(),
+          translation: json.translation_name || '',
+          category: 'random',
+        };
+      } catch (err) {
+        if (wrap) wrap.innerHTML = `<div class="review-loading">Failed: ${esc(err.message)}</div>`;
+        return;
+      }
     }
   }
 
@@ -878,10 +966,10 @@ async function renderVerseCard(v) {
         <div class="verse-reference">— ${esc(v.reference)}${v.translation ? ' · ' + esc(v.translation) : ''}</div>
       </div>
     </div>
-    <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;">
-      <button class="btn btn-primary" id="verseCopyText" style="flex:1;min-width:90px">Copy Text</button>
-      <button class="btn btn-primary" id="verseCopyImg" style="flex:1;min-width:90px">Copy Image</button>
-      <button class="btn" id="verseDownload" style="flex:1;min-width:90px">Download</button>
+    <div class="action-row">
+      <button class="action-pill primary" id="verseCopyText">Copy Text</button>
+      <button class="action-pill primary" id="verseCopyImg">Copy Image</button>
+      <button class="action-pill" id="verseDownload">Download</button>
     </div>
   `;
 

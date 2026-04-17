@@ -766,6 +766,61 @@
     .used-remove {
       flex-shrink: 0;
     }
+
+    /* Category select dropdown */
+    .category-select {
+      flex: 1;
+      padding: 8px 10px;
+      border: var(--border);
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      font-family: inherit;
+      background: var(--card);
+      box-shadow: var(--shadow-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      cursor: pointer;
+      outline: none;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath d='M3 5l3 3 3-3' fill='none' stroke='%230A0A0A' stroke-width='2'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+
+    .category-select:hover { background-color: var(--accent-soft); }
+
+    /* Action row (Copy Text / Copy Image / Download) */
+    .action-row {
+      display: flex;
+      gap: 6px;
+      margin: 10px 0;
+    }
+
+    .action-pill {
+      flex: 1;
+      padding: 10px 6px;
+      border: var(--border);
+      border-radius: 8px;
+      font-size: 10px;
+      font-weight: 800;
+      font-family: inherit;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 0.2px;
+      text-align: center;
+      background: var(--card);
+      box-shadow: var(--shadow-sm);
+      transition: all 0.1s;
+      white-space: nowrap;
+    }
+
+    .action-pill:hover { background: var(--accent-soft); }
+    .action-pill:active { transform: translate(2px, 2px); box-shadow: none; }
+    .action-pill.primary { background: var(--ink); color: #fff; }
+    .action-pill.primary:hover { background: var(--accent); }
   </style>
 </head>
 <body>
